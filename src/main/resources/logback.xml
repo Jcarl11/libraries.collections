@@ -1,0 +1,96 @@
+<configuration scan="true" scanPeriod="5 seconds">
+
+	<property name="logs_informational" value="./logs/informational-logs" />
+	<property name="logs_flaws" value="./logs/flaw-logs" />
+	<property name="logs_trace" value="./logs/trace-logs" />
+	<property name="dev_mode" value="./logs/dev-logs" />
+	<property name="APP_NAME" value="FILE.PROCESSING" />
+	<timestamp key="UNIQUE_TIMESTAMP" datePattern="yyyyMMddHHmmss" />
+
+	<appender name="DEFAULT" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<encoder>
+			<pattern>&lt;&lt;%level&gt;&gt;%date{MMM dd yyyy HH:mm:ss} [%thread] \(%class{0}.%M:%L\) - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ROLLING_FILE_APPENDER_INFORMATIONAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>&lt;&lt;%level&gt;&gt;%date{E MMM dd yyyy HH:mm:ss} [%thread] \(%class{0}.%M:%L\) - %msg%n</pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${logs_informational}/LOG_${APP_NAME}.INFOMATIONAL_%d{yyyyMMdd}%i.log</fileNamePattern>
+			<maxFileSize>5MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>50MB</totalSizeCap>
+		</rollingPolicy>
+
+		<filter class="prog.custom.logback.filters.InformationalFilter" />
+		
+	</appender>
+
+	<appender name="ROLLING_FILE_APPENDER_FLAW" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>&lt;&lt;%level&gt;&gt;%date{E MMM dd yyyy HH:mm:ss} [%thread] \(%class{0}.%M:%L\) - %msg%n</pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${logs_flaws}/LOG_${APP_NAME}.FLAWS_%d{yyyyMMdd}%i.log</fileNamePattern>
+			<maxFileSize>5MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>50MB</totalSizeCap>
+		</rollingPolicy>
+
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+	</appender>
+
+	<appender name="ROLLING_FILE_APPENDER_TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>&lt;&lt;%level&gt;&gt;%date{E MMM dd yyyy HH:mm:ss} [%thread] \(%class{0}.%M:%L\) - %msg%n</pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${logs_trace}/LOG_${APP_NAME}.TRACES_%d{yyyyMMdd}%i.log</fileNamePattern>
+			<maxFileSize>5MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>50MB</totalSizeCap>
+		</rollingPolicy>
+
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>TRACE</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	
+	<appender name="ROLLING_FILE_APPENDER_DEV" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>&lt;&lt;%level&gt;&gt;%date{E MMM dd yyyy HH:mm:ss} [%thread] \(%class{0}.%M:%L\) - %msg%n</pattern>
+		</encoder>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${dev_mode}/LOG_DEV.${UNIQUE_TIMESTAMP}_%d{yyyyMMdd}%i.log</fileNamePattern>
+      		<maxHistory>3</maxHistory>
+      		<maxFileSize>1MB</maxFileSize>
+      		<totalSizeCap>10MB</totalSizeCap>
+    	</rollingPolicy>
+		
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+	</appender>
+
+	<root level="ALL">
+		<appender-ref ref="DEFAULT" />
+		<appender-ref ref="ROLLING_FILE_APPENDER_INFORMATIONAL" />
+		<appender-ref ref="ROLLING_FILE_APPENDER_FLAW" />
+		<appender-ref ref="ROLLING_FILE_APPENDER_TRACE" />
+		<appender-ref ref="ROLLING_FILE_APPENDER_DEV" />
+	</root>
+
+</configuration>
