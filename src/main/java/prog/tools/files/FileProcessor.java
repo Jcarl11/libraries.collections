@@ -111,8 +111,16 @@ public class FileProcessor implements IBasicFileProcessor {
 		}
 	}
 
-	public List<String> readFromFile(File source) {
-		// TODO Auto-generated method stub
+	public List<String> readFromFile(File source) throws SecurityException {
+		logger.trace("Inside readFromFile");
+		if(!source.exists()) {
+			logger.error("File doesn't exist!");
+			return null;
+		}
+		
+		
+		
+		
 		return null;
 	}
 
